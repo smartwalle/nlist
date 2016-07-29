@@ -27,6 +27,9 @@ type Set interface {
 	// 返回集合元素组成的 Slice
 	Values() []interface{}
 
+	//
+	Iter() <- chan interface{}
+
 	// 交集
 	Intersect(s Set) Set
 
@@ -147,11 +150,34 @@ func (this *set) Values() []interface{} {
 	this.rLock()
 	defer this.rUnlock()
 
-	var ns = make([]interface{}, 0, this.len())
+	var vs = make([]interface{}, 0, this.len())
 	for k, _ := range this.m {
-		ns = append(ns, k)
+		vs = append(vs, k)
 	}
-	return ns
+	return vs
+}
+
+func (this *set) Iter() <- chan interface{} {
+	var ch = make(chan interface{})
+
+	go func(s *set) {
+		if s.block {
+			s.rLock()
+		}
+
+		for k, _ := range this.m {
+			ch <- k
+		}
+
+		close(ch)
+
+		if s.block {
+			s.rUnlock()
+		}
+
+	}(this)
+
+	return ch
 }
 
 func (this *set) Intersect(s Set) Set {
