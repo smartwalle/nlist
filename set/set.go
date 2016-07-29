@@ -125,8 +125,7 @@ func (this *set) Contains(values ...interface{}) bool {
 	defer this.rUnlock()
 
 	for _, v := range values {
-		_, exists := this.m[v]
-		if !exists {
+		if _, found := this.m[v]; !found {
 			return false
 		}
 	}
@@ -134,6 +133,13 @@ func (this *set) Contains(values ...interface{}) bool {
 }
 
 func (this *set) Len() int {
+	this.rLock()
+	defer this.rUnlock()
+
+	return this.len()
+}
+
+func (this *set) len() int {
 	return len(this.m)
 }
 
@@ -141,7 +147,7 @@ func (this *set) Values() []interface{} {
 	this.rLock()
 	defer this.rUnlock()
 
-	var ns = make([]interface{}, 0, this.Len())
+	var ns = make([]interface{}, 0, this.len())
 	for k, _ := range this.m {
 		ns = append(ns, k)
 	}
@@ -153,7 +159,7 @@ func (this *set) Intersect(s Set) Set {
 	defer this.rUnlock()
 
 	var ns = NewSet()
-	var vs = s.Values() //TODO
+	var vs = s.Values()
 	for _, v := range vs {
 		_, exists := this.m[v]
 		if exists {
@@ -168,7 +174,7 @@ func (this *set) Union(s Set) Set {
 	defer this.rUnlock()
 
 	var ns = NewSet()
-	ns.Add(this.Values()...) //TODO
+	ns.Add(this.Values()...)
 	ns.Add(s.Values()...)
 	return ns
 }
@@ -180,7 +186,7 @@ func (this *set) Difference(s Set) Set {
 	var ns = NewSet()
 	for k, _ := range this.m {
 		if !s.Contains(k) {
-			ns.Add(k) // TODO
+			ns.Add(k)
 		}
 	}
 	return ns
