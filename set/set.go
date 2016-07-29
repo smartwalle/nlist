@@ -30,8 +30,11 @@ type Set interface {
 	// Iter 返回集合的所有元素
 	Iter() <- chan interface{}
 
-	// 判断和另一个集合是否相等
+	// Equal 判断和另一个集合是否相等
 	Equal(s Set) bool
+
+	// Clone 复制一个集合
+	Clone() Set
 
 	// Intersect 交集
 	Intersect(s Set) Set
@@ -198,6 +201,17 @@ func (this *set) Equal(s Set) bool {
 	}
 
 	return true
+}
+
+func (this *set) Clone() Set {
+	this.rLock()
+	defer this.rUnlock()
+
+	var ns = NewSet()
+	for k := range this.m {
+		ns.Add(k)
+	}
+	return ns
 }
 
 func (this *set) Intersect(s Set) Set {

@@ -77,3 +77,18 @@ func TestEqual(t *testing.T) {
 		t.Error("s1 与 s2 不应该相等")
 	}
 }
+
+func TestClone(t *testing.T) {
+	var s1 = NewBlockSet(1, 2, 3)
+	var s2 = s1.Clone()
+
+	if !s1.Equal(s2) {
+		t.Error("s1 与 s2 应该相等")
+	}
+
+	s2.Add(4)
+
+	if s1.Equal(s2) {
+		t.Error("s1 与 s2 不应该相等")
+	}
+}
