@@ -89,7 +89,7 @@ func removeAll(source, target interface{}, removeAll bool) bool {
 	return false
 }
 
-// IndexAt 用于获取 target 在 source 的索引位置
+// Index 用于获取 target 在 source 的索引位置
 // source 可以为 slice 或者 array
 func Index(source, target interface{}) int {
 	var indexList = indexs(source, target, false)
