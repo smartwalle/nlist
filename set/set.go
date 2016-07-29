@@ -1,5 +1,10 @@
 package set
 
+import (
+	"fmt"
+	"sync"
+)
+
 type Set interface {
 	// 向集合添加元素
 	Add(values ...interface{})
@@ -32,43 +37,95 @@ type Set interface {
 	Difference(s Set) Set
 }
 
-
-type set map[interface{}]struct{}
+type set struct {
+	m     map[interface{}]struct{}
+	rw    sync.RWMutex
+	block bool
+}
 
 func NewSet(values ...interface{}) Set {
-	var s = make(set)
+	return newSet(false, values...)
+}
+
+func NewBlockSet(values ...interface{}) Set {
+	return newSet(true, values...)
+}
+
+func newSet(block bool, values ...interface{}) Set {
+	var s = &set{}
+	s.block = block
+	s.m = make(map[interface{}]struct{})
 	if len(values) > 0 {
 		s.Add(values...)
 	}
-	return &s
+	return s
+}
+
+func (this *set) lock() {
+	if this.block {
+		this.rw.Lock()
+	}
+}
+
+func (this *set) unlock() {
+	if this.block {
+		this.rw.Unlock()
+	}
+}
+
+func (this *set) rLock() {
+	if this.block {
+		this.rw.RLock()
+	}
+}
+
+func (this *set) rUnlock() {
+	if this.block {
+		this.rw.RUnlock()
+	}
 }
 
 func (this *set) Add(values ...interface{}) {
+	this.lock()
+	defer this.unlock()
+
 	for _, v := range values {
-		(*this)[v] = struct{}{}
+		this.m[v] = struct{}{}
 	}
 }
 
 func (this *set) Remove(values ...interface{}) {
+	this.lock()
+	defer this.unlock()
+
 	for _, v := range values {
-		delete(*this, v)
+		delete(this.m, v)
 	}
 }
 
 func (this *set) RemoveAll() {
-	for k, _ := range *this {
-		delete(*this, k)
+	this.lock()
+	defer this.unlock()
+
+	for k, _ := range this.m {
+		delete(this.m, k)
 	}
 }
 
 func (this *set) Exists(v interface{}) bool {
-	_, found := (*this)[v];
+	this.rLock()
+	defer this.rUnlock()
+
+	_, found := this.m[v]
 	return found
 }
 
 func (this *set) Contains(values ...interface{}) bool {
+	this.rLock()
+	defer this.rUnlock()
+
 	for _, v := range values {
-		_, exists := (*this)[v]
+		_, exists := this.m[v]
 		if !exists {
 			return false
 		}
@@ -77,23 +134,28 @@ func (this *set) Contains(values ...interface{}) bool {
 }
 
 func (this *set) Len() int {
-	return len(*this)
+	return len(this.m)
 }
 
 func (this *set) Values() []interface{} {
-	var s = *this
+	this.rLock()
+	defer this.rUnlock()
+
 	var ns = make([]interface{}, 0, this.Len())
-	for k, _ := range s {
+	for k, _ := range this.m {
 		ns = append(ns, k)
 	}
 	return ns
 }
 
 func (this *set) Intersect(s Set) Set {
+	this.rLock()
+	defer this.rUnlock()
+
 	var ns = NewSet()
-	var vs = s.Values()
+	var vs = s.Values() //TODO
 	for _, v := range vs {
-		_, exists := (*this)[v]
+		_, exists := this.m[v]
 		if exists {
 			ns.Add(v)
 		}
@@ -102,18 +164,28 @@ func (this *set) Intersect(s Set) Set {
 }
 
 func (this *set) Union(s Set) Set {
+	this.rLock()
+	defer this.rUnlock()
+
 	var ns = NewSet()
-	ns.Add(this.Values()...)
+	ns.Add(this.Values()...) //TODO
 	ns.Add(s.Values()...)
 	return ns
 }
 
 func (this *set) Difference(s Set) Set {
+	this.rLock()
+	defer this.rUnlock()
+
 	var ns = NewSet()
-	for k, _ := range *this {
+	for k, _ := range this.m {
 		if !s.Contains(k) {
-			ns.Add(k)
+			ns.Add(k) // TODO
 		}
 	}
 	return ns
+}
+
+func (this *set) String() string {
+	return fmt.Sprint(this.Values()...)
 }
