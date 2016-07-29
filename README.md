@@ -1,7 +1,7 @@
 # Container
 Golang 相关的容器组件实现。
 
-## Set
+## Golang Set
 Golang 实现的集合,可选线程安全。
 
 
@@ -52,7 +52,7 @@ type Set interface {
  
 通过 set.NewBlockSet() 创建的集合是 *线程安全* 的。
 
-## Map
+## Golang Map
 Golang 内置的 map 是非线程安全的, 因此重新实现了一个 Map。
 
 ```
