@@ -61,3 +61,19 @@ func TestIter(t *testing.T) {
 		fmt.Println(v)
 	}
 }
+
+func TestEqual(t *testing.T) {
+	var s1 = NewBlockSet(1, 2, 3)
+	var s2 = NewBlockSet(2, 1, 3)
+
+	if !s1.Equal(s2) {
+		t.Error("s1 与 s2 应该相等")
+	}
+
+	s2.Add("5")
+	s1.Add(5)
+
+	if s1.Equal(s2) {
+		t.Error("s1 与 s2 不应该相等")
+	}
+}

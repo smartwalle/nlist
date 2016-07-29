@@ -6,37 +6,40 @@ import (
 )
 
 type Set interface {
-	// 向集合添加元素
+	// Add 向集合添加元素
 	Add(values ...interface{})
 
-	// 从集合移除指定的元素
+	// Remove 从集合移除指定的元素
 	Remove(values ...interface{})
 
-	// 从集合移除所有的元素
+	// RemoveAll 从集合移除所有的元素
 	RemoveAll()
 
-	// 判断集合是否包含指定元素
+	// Exists 判断集合是否包含指定元素
 	Exists(v interface{}) bool
 
-	// 判断集合是否包含指定的元素,包含所有的元素才会返回 true, 否则返回 false
+	// Contains 判断集合是否包含指定的元素,包含所有的元素才会返回 true, 否则返回 false
 	Contains(values ...interface{}) bool
 
-	// 返回集合元素的长度
+	// Len 返回集合元素的长度
 	Len() int
 
-	// 返回集合元素组成的 Slice
+	// Values 返回集合所有元素组成的 Slice
 	Values() []interface{}
 
-	//
+	// Iter 返回集合的所有元素
 	Iter() <- chan interface{}
 
-	// 交集
+	// 判断和另一个集合是否相等
+	Equal(s Set) bool
+
+	// Intersect 交集
 	Intersect(s Set) Set
 
-	// 并集
+	// Union 并集
 	Union(s Set) Set
 
-	// 差集
+	// Difference 差集
 	Difference(s Set) Set
 }
 
@@ -178,6 +181,23 @@ func (this *set) Iter() <- chan interface{} {
 	}(this)
 
 	return ch
+}
+
+func (this *set) Equal(s Set) bool {
+	this.rLock()
+	defer this.rUnlock()
+
+	if this.len() != s.Len() {
+		return false
+	}
+
+	for k := range this.m {
+		if !s.Exists(k) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func (this *set) Intersect(s Set) Set {
