@@ -28,7 +28,7 @@ type Set interface {
 	Values() []interface{}
 
 	// Iter 返回集合的所有元素
-	Iter() <- chan interface{}
+	Iter() <-chan interface{}
 
 	// Equal 判断和另一个集合是否相等
 	Equal(s Set) bool
@@ -116,7 +116,7 @@ func (this *set) RemoveAll() {
 	this.lock()
 	defer this.unlock()
 
-	for k, _ := range this.m {
+	for k := range this.m {
 		delete(this.m, k)
 	}
 }
@@ -157,13 +157,13 @@ func (this *set) Values() []interface{} {
 	defer this.rUnlock()
 
 	var vs = make([]interface{}, 0, this.len())
-	for k, _ := range this.m {
+	for k := range this.m {
 		vs = append(vs, k)
 	}
 	return vs
 }
 
-func (this *set) Iter() <- chan interface{} {
+func (this *set) Iter() <-chan interface{} {
 	var ch = make(chan interface{})
 
 	go func(s *set) {
@@ -171,7 +171,7 @@ func (this *set) Iter() <- chan interface{} {
 			s.rLock()
 		}
 
-		for k, _ := range this.m {
+		for k := range this.m {
 			ch <- k
 		}
 
@@ -244,7 +244,7 @@ func (this *set) Difference(s Set) Set {
 	defer this.rUnlock()
 
 	var ns = NewSet()
-	for k, _ := range this.m {
+	for k := range this.m {
 		if !s.Contains(k) {
 			ns.Add(k)
 		}

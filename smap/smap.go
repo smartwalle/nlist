@@ -1,11 +1,11 @@
 package smap
 
 import (
-	"sync"
 	"fmt"
+	"sync"
 )
 
-type SyncMap interface {
+type Map interface {
 	// Set 添加一组键值对
 	Set(key, value interface{})
 
@@ -34,7 +34,7 @@ type SyncMap interface {
 	Values() []interface{}
 
 	// Iter 返回所有 key 及 value
-	Iter() <- chan itemValue
+	Iter() <-chan itemValue
 }
 
 type itemValue struct {
@@ -48,15 +48,15 @@ type syncMap struct {
 	block bool
 }
 
-func NewMap() SyncMap {
+func NewMap() Map {
 	return newMap(false)
 }
 
-func NewSyncMap() SyncMap {
+func NewBlockMap() Map {
 	return newMap(true)
 }
 
-func newMap(block bool) SyncMap {
+func newMap(block bool) Map {
 	var sm = &syncMap{}
 	sm.block = block
 	sm.m = make(map[interface{}]interface{})
@@ -105,7 +105,7 @@ func (this *syncMap) RemoveAll() {
 	this.lock()
 	defer this.unlock()
 
-	for k, _ := range this.m {
+	for k := range this.m {
 		delete(this.m, k)
 	}
 }
@@ -153,7 +153,7 @@ func (this *syncMap) Keys() []interface{} {
 	defer this.rUnlock()
 	var keys = make([]interface{}, 0, 0)
 
-	for k, _ := range this.m {
+	for k := range this.m {
 		keys = append(keys, k)
 	}
 	return keys
@@ -170,7 +170,7 @@ func (this *syncMap) Values() []interface{} {
 	return values
 }
 
-func (this *syncMap) Iter() <- chan itemValue {
+func (this *syncMap) Iter() <-chan itemValue {
 	var iv = make(chan itemValue)
 
 	go func(m *syncMap) {

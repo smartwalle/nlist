@@ -1,12 +1,12 @@
 package smap
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestSyncMap(t *testing.T) {
-	var m = NewSyncMap()
+	var m = NewBlockMap()
 	m.Set("a", "bbb")
 
 	fmt.Println(m)
@@ -14,7 +14,7 @@ func TestSyncMap(t *testing.T) {
 
 func TestIter(t *testing.T) {
 	fmt.Println("=====TestIter=====")
-	var m = NewSyncMap()
+	var m = NewBlockMap()
 
 	m.Set("a", "aaa")
 	m.Set("b", "bbb")

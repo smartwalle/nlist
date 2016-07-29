@@ -1,8 +1,8 @@
 package set
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestSet(t *testing.T) {
@@ -55,7 +55,7 @@ func TestDifference(t *testing.T) {
 
 func TestIter(t *testing.T) {
 	fmt.Println("=====TestIter=====")
-	var s1 = NewBlockSet(1,2,3,4,5)
+	var s1 = NewBlockSet(1, 2, 3, 4, 5)
 
 	for v := range s1.Iter() {
 		fmt.Println(v)
