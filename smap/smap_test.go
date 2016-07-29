@@ -11,3 +11,15 @@ func TestSyncMap(t *testing.T) {
 
 	fmt.Println(m)
 }
+
+func TestIter(t *testing.T) {
+	fmt.Println("=====TestIter=====")
+	var m = NewSyncMap()
+
+	m.Set("a", "aaa")
+	m.Set("b", "bbb")
+
+	for v := range m.Iter() {
+		fmt.Println(v.Key, v.Value)
+	}
+}

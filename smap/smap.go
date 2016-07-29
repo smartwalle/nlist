@@ -6,24 +6,40 @@ import (
 )
 
 type SyncMap interface {
-	//
+	// Set 添加一组键值对
 	Set(key, value interface{})
 
+	// Remove 移除指定的 key 及其 value
 	Remove(key interface{})
 
+	// RemoveAll 移除所有的 key 及 value
 	RemoveAll()
 
+	// Exists 判断指定的 key 是否存在
 	Exists(key interface{}) bool
 
+	// Contains 判断指定的 key 列表是否存在,只有当所有的 key 都存在的时候,才会返回 true
 	Contains(keys ...interface{}) bool
 
+	// Len 返回元素的个数
 	Len() int
 
+	// Value 获取指定 key 的 value
 	Value(key interface{}) interface{}
 
+	// Keys 返回由所有 key 组成的 Slice
 	Keys() []interface{}
 
+	// Values 返回由所有 value 组成的 Slice
 	Values() []interface{}
+
+	// Iter 返回所有 key 及 value
+	Iter() <- chan itemValue
+}
+
+type itemValue struct {
+	Key   interface{}
+	Value interface{}
 }
 
 type syncMap struct {
@@ -152,6 +168,28 @@ func (this *syncMap) Values() []interface{} {
 		values = append(values, v)
 	}
 	return values
+}
+
+func (this *syncMap) Iter() <- chan itemValue {
+	var iv = make(chan itemValue)
+
+	go func(m *syncMap) {
+		if m.block {
+			m.rLock()
+		}
+
+		for k, v := range this.m {
+			iv <- itemValue{k, v}
+		}
+
+		close(iv)
+
+		if m.block {
+			m.rUnlock()
+		}
+	}(this)
+
+	return iv
 }
 
 func (this *syncMap) String() string {
