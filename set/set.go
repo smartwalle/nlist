@@ -52,15 +52,7 @@ type set struct {
 	block bool
 }
 
-func NewSet(values ...interface{}) Set {
-	return newSet(false, values...)
-}
-
-func NewBlockSet(values ...interface{}) Set {
-	return newSet(true, values...)
-}
-
-func newSet(block bool, values ...interface{}) Set {
+func New(block bool, values ...interface{}) Set {
 	var s = &set{}
 	s.block = block
 	s.m = make(map[interface{}]struct{})
@@ -207,7 +199,7 @@ func (this *set) Clone() Set {
 	this.rLock()
 	defer this.rUnlock()
 
-	var ns = NewSet()
+	var ns = New(this.block)
 	for k := range this.m {
 		ns.Add(k)
 	}
@@ -218,7 +210,7 @@ func (this *set) Intersect(s Set) Set {
 	this.rLock()
 	defer this.rUnlock()
 
-	var ns = NewSet()
+	var ns = New(this.block)
 	var vs = s.Values()
 	for _, v := range vs {
 		_, exists := this.m[v]
@@ -233,7 +225,7 @@ func (this *set) Union(s Set) Set {
 	this.rLock()
 	defer this.rUnlock()
 
-	var ns = NewSet()
+	var ns = New(this.block)
 	ns.Add(this.Values()...)
 	ns.Add(s.Values()...)
 	return ns
@@ -243,7 +235,7 @@ func (this *set) Difference(s Set) Set {
 	this.rLock()
 	defer this.rUnlock()
 
-	var ns = NewSet()
+	var ns = New(this.block)
 	for k := range this.m {
 		if !s.Contains(k) {
 			ns.Add(k)

@@ -6,7 +6,7 @@ import (
 )
 
 func TestSyncMap(t *testing.T) {
-	var m = NewBlockMap()
+	var m = New(true)
 	m.Set("a", "bbb")
 
 	fmt.Println(m)
@@ -14,7 +14,7 @@ func TestSyncMap(t *testing.T) {
 
 func TestIter(t *testing.T) {
 	fmt.Println("=====TestIter=====")
-	var m = NewBlockMap()
+	var m = New(true)
 
 	m.Set("a", "aaa")
 	m.Set("b", "bbb")

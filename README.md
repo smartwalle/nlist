@@ -1,5 +1,5 @@
 # Container
-Golang 相关的容器组件实现。
+Golang 相关的容器组件实现, 目前有set、map。
 
 ## Golang Set
 Golang 实现的集合,可选线程安全。
@@ -48,9 +48,9 @@ type Set interface {
 }
 ```
 
-通过 set.NewSet() 创建的集合是 *非线程安全* 的。
+通过 set.New(false) 创建的集合是 *非线程安全* 的。
  
-通过 set.NewBlockSet() 创建的集合是 *线程安全* 的。
+通过 set.New(true) 创建的集合是 *线程安全* 的。
 
 ## Golang Map
 Golang 内置的 map 是非线程安全的, 因此重新实现了一个 Map。
@@ -89,9 +89,9 @@ type Map interface {
 }
 ```
 
-通过 smap.NewMap() 创建的 Map 是 *非线程安全* 的。
+通过 smap.New(false) 创建的 Map 是 *非线程安全* 的。
 
-通过 smap.NewBlockMap() 创建的 Map 是 *线程安全* 的。
+通过 smap.New(true) 创建的 Map 是 *线程安全* 的。
 
 ## 其它 - container 包
 

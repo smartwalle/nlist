@@ -34,10 +34,10 @@ type Map interface {
 	Values() []interface{}
 
 	// Iter 返回所有 key 及 value
-	Iter() <-chan itemValue
+	Iter() <-chan mapValue
 }
 
-type itemValue struct {
+type mapValue struct {
 	Key   interface{}
 	Value interface{}
 }
@@ -48,15 +48,7 @@ type syncMap struct {
 	block bool
 }
 
-func NewMap() Map {
-	return newMap(false)
-}
-
-func NewBlockMap() Map {
-	return newMap(true)
-}
-
-func newMap(block bool) Map {
+func New(block bool) Map {
 	var sm = &syncMap{}
 	sm.block = block
 	sm.m = make(map[interface{}]interface{})
@@ -170,8 +162,8 @@ func (this *syncMap) Values() []interface{} {
 	return values
 }
 
-func (this *syncMap) Iter() <-chan itemValue {
-	var iv = make(chan itemValue)
+func (this *syncMap) Iter() <-chan mapValue {
+	var iv = make(chan mapValue)
 
 	go func(m *syncMap) {
 		if m.block {
@@ -179,7 +171,7 @@ func (this *syncMap) Iter() <-chan itemValue {
 		}
 
 		for k, v := range this.m {
-			iv <- itemValue{k, v}
+			iv <- mapValue{k, v}
 		}
 
 		close(iv)
