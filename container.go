@@ -130,7 +130,7 @@ func indexs(source, target interface{}, findAll bool) []int {
 	return indexList
 }
 
-// GetValueWithMap 用于获取一个 map 中获取指定 key 的 value
+// GetValueWithMap 用于从 map 中获取指定 key 的 value
 // source 为 map, 如果 key 不存在, 将返回 nil
 func GetValueWithMap(source, key interface{}) interface{} {
 	if source == nil {
