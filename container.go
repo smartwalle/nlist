@@ -129,26 +129,3 @@ func indexs(source, target interface{}, findAll bool) []int {
 	}
 	return indexList
 }
-
-// GetValueWithMap 用于从 map 中获取指定 key 的 value
-// source 为 map, 如果 key 不存在, 将返回 nil
-func GetValueWithMap(source, key interface{}) interface{} {
-	if source == nil {
-		return nil
-	}
-
-	var sourceValue = reflect.ValueOf(source)
-	if sourceValue.IsNil() {
-		return nil
-	}
-
-	switch sourceValue.Kind() {
-	case reflect.Map:
-		var targetValue = reflect.ValueOf(key)
-
-		if targetValue.IsValid() {
-			return sourceValue.MapIndex(targetValue).Interface()
-		}
-	}
-	return nil
-}
