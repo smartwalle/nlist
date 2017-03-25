@@ -1,11 +1,10 @@
-package cartesian
+package combination
 
-func CartesianProduct(params [][]interface{}) (results [][]interface{}) {
+func Combination(params [][]interface{}) (results [][]interface{}) {
 	var pCount = 1
 	for _, p := range params {
 		pCount = pCount * len(p)
 	}
-
 	results = make([][]interface{}, 0, 0)
 
 	var psLen = len(params)
