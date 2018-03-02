@@ -110,7 +110,7 @@ func (this *syncList) MoveAfter(e, mark *list.Element) {
 	this.list.MoveAfter(e, mark)
 }
 
-func (this *syncList) PopFront() *list.Element {
+func (this *syncList) PopFront() interface{} {
 	this.mu.Lock()
 	defer this.mu.Unlock()
 
@@ -118,10 +118,10 @@ func (this *syncList) PopFront() *list.Element {
 	if item != nil {
 		this.list.Remove(item)
 	}
-	return item
+	return item.Value
 }
 
-func (this *syncList) PopBack() *list.Element {
+func (this *syncList) PopBack() interface{} {
 	this.mu.Lock()
 	defer this.mu.Unlock()
 
@@ -129,5 +129,5 @@ func (this *syncList) PopBack() *list.Element {
 	if item != nil {
 		this.list.Remove(item)
 	}
-	return item
+	return item.Value
 }
