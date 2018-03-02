@@ -82,7 +82,7 @@ func (this *syncList) MoveBefore(e, mark *list.Element) {
 	this.list.MoveBefore(e, mark)
 }
 
-func (this *syncList)MoveAfter(e, mark *list.Element) {
+func (this *syncList) MoveAfter(e, mark *list.Element) {
 	this.mu.Lock()
 	defer this.mu.Unlock()
 	this.list.MoveAfter(e, mark)
