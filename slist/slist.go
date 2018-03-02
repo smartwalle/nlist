@@ -5,6 +5,28 @@ import (
 	"sync"
 )
 
+type List interface {
+	Len() int
+
+	Front() *list.Element
+	Back() *list.Element
+
+	Remove(e *list.Element) interface{}
+	PushFront(v interface{}) *list.Element
+	PushBack(v interface{}) *list.Element
+
+	InsertBefore(v interface{}, mark *list.Element) *list.Element
+	InsertAfter(v interface{}, mark *list.Element) *list.Element
+
+	MoveToFront(e *list.Element)
+	MoveToBack(e *list.Element)
+	MoveBefore(e, mark *list.Element)
+	MoveAfter(e, mark *list.Element)
+
+	PopFront() *list.Element
+	PopBack() *list.Element
+}
+
 type syncList struct {
 	list *list.List
 	mu   sync.RWMutex
