@@ -117,8 +117,9 @@ func (this *syncList) PopFront() interface{} {
 	var item = this.list.Front()
 	if item != nil {
 		this.list.Remove(item)
+		return item.Value
 	}
-	return item.Value
+	return nil
 }
 
 func (this *syncList) PopBack() interface{} {
@@ -128,6 +129,7 @@ func (this *syncList) PopBack() interface{} {
 	var item = this.list.Back()
 	if item != nil {
 		this.list.Remove(item)
+		return item.Value
 	}
-	return item.Value
+	return nil
 }
