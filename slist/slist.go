@@ -23,8 +23,8 @@ type List interface {
 	MoveBefore(e, mark *list.Element)
 	MoveAfter(e, mark *list.Element)
 
-	PopFront() *list.Element
-	PopBack() *list.Element
+	PopFront() interface{}
+	PopBack() interface{}
 }
 
 type syncList struct {
