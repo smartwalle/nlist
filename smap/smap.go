@@ -44,7 +44,7 @@ type mapValue struct {
 
 type syncMap struct {
 	m     map[interface{}]interface{}
-	rw    sync.RWMutex
+	mu    sync.RWMutex
 	block bool
 }
 
@@ -57,25 +57,25 @@ func New(block bool) Map {
 
 func (this *syncMap) lock() {
 	if this.block {
-		this.rw.Lock()
+		this.mu.Lock()
 	}
 }
 
 func (this *syncMap) unlock() {
 	if this.block {
-		this.rw.Unlock()
+		this.mu.Unlock()
 	}
 }
 
 func (this *syncMap) rLock() {
 	if this.block {
-		this.rw.RLock()
+		this.mu.RLock()
 	}
 }
 
 func (this *syncMap) rUnlock() {
 	if this.block {
-		this.rw.RUnlock()
+		this.mu.RUnlock()
 	}
 }
 

@@ -48,7 +48,7 @@ type Set interface {
 
 type set struct {
 	m     map[interface{}]struct{}
-	rw    sync.RWMutex
+	mu    sync.RWMutex
 	block bool
 }
 
@@ -64,25 +64,25 @@ func New(block bool, values ...interface{}) Set {
 
 func (this *set) lock() {
 	if this.block {
-		this.rw.Lock()
+		this.mu.Lock()
 	}
 }
 
 func (this *set) unlock() {
 	if this.block {
-		this.rw.Unlock()
+		this.mu.Unlock()
 	}
 }
 
 func (this *set) rLock() {
 	if this.block {
-		this.rw.RLock()
+		this.mu.RLock()
 	}
 }
 
 func (this *set) rUnlock() {
 	if this.block {
-		this.rw.RUnlock()
+		this.mu.RUnlock()
 	}
 }
 
