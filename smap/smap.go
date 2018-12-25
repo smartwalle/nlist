@@ -143,7 +143,7 @@ func (this *syncMap) Value(key interface{}) interface{} {
 func (this *syncMap) Keys() []interface{} {
 	this.rLock()
 	defer this.rUnlock()
-	var keys = make([]interface{}, 0, 0)
+	var keys = make([]interface{}, 0, len(this.m))
 
 	for k := range this.m {
 		keys = append(keys, k)
@@ -154,7 +154,7 @@ func (this *syncMap) Keys() []interface{} {
 func (this *syncMap) Values() []interface{} {
 	this.rLock()
 	defer this.rUnlock()
-	var values = make([]interface{}, 0, 0)
+	var values = make([]interface{}, 0, len(this.m))
 
 	for _, v := range this.m {
 		values = append(values, v)
