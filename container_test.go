@@ -1,8 +1,8 @@
 package container
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 //func TestSliceContains(t *testing.T) {
@@ -29,7 +29,7 @@ import (
 //	fmt.Println(m1)
 //}
 
-func TestRemoveSliceKey(t *testing.T)  {
+func TestRemoveSliceKey(t *testing.T) {
 	var s1 = []interface{}{"a", "b", "e", "f", nil, "a", "b"}
 
 	fmt.Println(s1)

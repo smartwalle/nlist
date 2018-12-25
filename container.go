@@ -19,7 +19,7 @@ func Contains(source, target interface{}) bool {
 	switch sourceValue.Kind() {
 	case reflect.Array, reflect.Slice:
 		var l = sourceValue.Len()
-		for i:=0; i<l; i++ {
+		for i := 0; i < l; i++ {
 			if sourceValue.Index(i).Interface() == target {
 				return true
 			}
@@ -71,7 +71,7 @@ func removeAll(source, target interface{}, removeAll bool) bool {
 				if index == 0 {
 					beginIndex = 0
 				} else {
-					beginIndex = indexList[index-1]+1
+					beginIndex = indexList[index-1] + 1
 				}
 
 				endIndex = indexList[index]
@@ -118,7 +118,7 @@ func indexs(source, target interface{}, findAll bool) []int {
 	case reflect.Array, reflect.Slice:
 		var l = sourceValue.Len()
 
-		for i:=0; i<l; i++ {
+		for i := 0; i < l; i++ {
 			if sourceValue.Index(i).Interface() == target {
 				indexList = append(indexList, i)
 				if !findAll {

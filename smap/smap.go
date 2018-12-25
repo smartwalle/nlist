@@ -87,8 +87,8 @@ func (this *syncMap) Set(key, value interface{}) {
 }
 
 func (this *syncMap) Remove(key interface{}) {
-	this.rLock()
-	defer this.rUnlock()
+	this.lock()
+	defer this.unlock()
 
 	delete(this.m, key)
 }
@@ -163,22 +163,15 @@ func (this *syncMap) Values() []interface{} {
 }
 
 func (this *syncMap) Iter() <-chan mapValue {
-	var iv = make(chan mapValue)
+	var iv = make(chan mapValue, len(this.m))
 
 	go func(m *syncMap) {
-		if m.block {
-			m.rLock()
-		}
-
+		m.rLock()
 		for k, v := range this.m {
 			iv <- mapValue{k, v}
 		}
-
 		close(iv)
-
-		if m.block {
-			m.rUnlock()
-		}
+		m.rUnlock()
 	}(this)
 
 	return iv

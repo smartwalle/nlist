@@ -156,26 +156,18 @@ func (this *set) Values() []interface{} {
 }
 
 func (this *set) Iter() <-chan interface{} {
-	var ch = make(chan interface{})
+	var iv = make(chan interface{}, len(this.m))
 
 	go func(s *set) {
-		if s.block {
-			s.rLock()
-		}
-
+		s.rLock()
 		for k := range this.m {
-			ch <- k
+			iv <- k
 		}
-
-		close(ch)
-
-		if s.block {
-			s.rUnlock()
-		}
-
+		close(iv)
+		s.rUnlock()
 	}(this)
 
-	return ch
+	return iv
 }
 
 func (this *set) Equal(s Set) bool {

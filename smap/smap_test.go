@@ -19,7 +19,10 @@ func TestIter(t *testing.T) {
 	m.Set("a", "aaa")
 	m.Set("b", "bbb")
 
-	for v := range m.Iter() {
-		fmt.Println(v.Key, v.Value)
+	var vv = m.Iter()
+
+	for v := range vv {
+		m.Remove(v.Key)
+		fmt.Println(v.Key, v.Value, m.Len())
 	}
 }
